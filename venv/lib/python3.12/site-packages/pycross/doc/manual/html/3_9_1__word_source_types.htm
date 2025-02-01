@@ -1,0 +1,591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--[if lt IE 7]><html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="ie ie6 no-js"><![endif]-->
+<!--[if IE 7 ]><html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="ie ie7 no-js"><![endif]-->
+<!--[if IE 8 ]><html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="ie ie8 no-js"><![endif]-->
+<!--[if IE 9 ]><html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="ie ie9 no-js"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><!--<![endif]-->
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="3.9.1. Word source types" />
+    <meta property="og:description" content="3.9.1. Word source types&#x000D;&#x000A;&#x000D;&#x000A;The application can use three sources of words to generate crosswords:&#x000D;&#x000A;&#x000D;&#x000A;1. SQLite databases&#x000D;&#x000A;2. Text files&#x000D;&#x000A;3. Simple in-memory lists&#x000D;&#x000A;&#x000D;&#x000A;As you will see in the following sections, these source types can be used in combin" />
+    <meta property="og:image" content="https://github.com/S0mbre/crossword/wiki/drex_3_9_1__word_source_types_custom.png" />
+    <meta property="og:url" content="https://github.com/S0mbre/crossword/wiki/3_9_1__word_source_types.htm" />
+
+    <script type="text/javascript">
+    //<![CDATA[
+        drex_file_name = "3_9_1__word_source_types.htm";
+    //]]>
+    </script>
+
+    		<title>3.9.1. Word source types</title>
+
+    <link rel="stylesheet" type="text/css" href="css/all.css" media="all" />
+    <link rel="stylesheet" href="de_style.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="custom.css" type="text/css" media="all" />
+
+    <link rel="canonical" href="https://github.com/S0mbre/crossword/wiki/3_9_1__word_source_types.htm" />
+    <script type="text/javascript" src="js/all.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/drexplain.data.index.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/all2.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/oembed.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+        $(document).ready(function() {
+                $(".oembed").oembed(null,
+                        {
+                            embedMethod: "replace_with_new_size"
+                        });
+        });
+    //]]>
+    </script>
+    <script type="text/javascript" src="js/socialscript.js" charset="utf-8"></script>
+                </head>
+<body class="b-body">
+<script type="text/javascript">
+//<![CDATA[
+    if (document.referrer == "" && navigator.userAgent == "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11")
+    {
+        var im = document.createElement("img");
+        im.src = "https://github.com/S0mbre/crossword/wiki/drex_3_9_1__word_source_types_custom.png";
+        document.body.appendChild(im);
+
+        $.drex_avoid_load = true;
+    }
+//]]>
+</script>
+<div class="b-pageLayout" id="pageLayout">
+<script type="text/javascript">
+//<![CDATA[
+    if ($.drex_avoid_load)
+        $("#pageLayout").addClass("hidden");
+    else if (1 == 1 && !is_touch_device())
+        $("#pageLayout").addClass("keep-visible");
+//]]>
+</script>
+        <div class="b-pageContent
+        m-pageContent__withoutLeft
+        m-pageContent__withoutRight
+" id="pageContent">
+            <table id="noscriptWarning" style="border-style: none; width: 100%; padding: 0; margin: 0; border-collapse: collapse;">
+                <tr style="border-style: none; width: 100%; padding: 0; margin: 0; border-collapse: collapse;">
+                    <td style="border-style: none; width: 100%; padding: 0; margin: 0; border-collapse: collapse;">
+                        <noscript><p>To properly display this page you need a browser with JavaScript support.</p></noscript>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="b-tree m-tree__contextMenu" id="keywordContextMenu"><table class="b-tree__layout"><tr><td class="b-tree__layoutSide"></td></tr></table></div>
+            <table class="b-pageContent__layout">
+                <tr class="b-pageContent__row m-pageContent__row__header" id="pageContentHeader">
+                    <td class="b-pageContent__side m-pageContent__side__header">
+                        <div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><table class="de_tbl_576 detbl" style="width: 100%; margin-left: 0; margin-right: auto;">
+<col style="width: 100%;" class="de_col_1_576" />
+<tr style="height: 89px;">
+<td class="de_td_576" style = "padding: 2px; padding-bottom: 1px; border-left-style: none; border-left-width: 0px; border-left-color: #000000; border-right-style: none; border-right-width: 0px; border-right-color: #000000; border-top-style: none; border-top-width: 0px; border-top-color: #000000; border-bottom-style: none; border-bottom-width: 0px; border-bottom-color: #000000;  width: 100%; vertical-align: bottom;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><img  alt="" style="border: solid 0px;  float: left; " width="92" height="92" class=" de_D7A9C94272" src="drex_header_custom.png"/><span style="font-family: &quot;Arial&quot;;font-size: 20pt;color:#f0f0f0;"><strong>pycrossword</strong></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span style="font-family: &quot;Arial&quot;;font-size: 18pt;color:#f0f0f0;"><strong><sup>User Guide</sup></strong></span></div>
+</td></tr></table></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="b-pageContent__side">
+                    <table id="internal_wrapper"><!-- internal_wrapper -->
+                        <tr>
+
+                    <td class="b-pageContent__side m-pageContent__side__left" id="pageContentLeft"></td>
+                    <td class="b-pageContent__side m-pageContent__side__middle" id="pageContentMiddle">
+                        <script type="text/javascript">
+                        //<![CDATA[
+                            if (1 == 1 && !is_touch_device())
+                                $("#pageContentMiddle").addClass("hidden");
+                        //]]>
+                        </script>
+                        <div class="b-workZone
+" id="workZone">
+                            <table class="b-workZone__layout">
+                                <tr>
+                                    <td class="b-workZone__side m-workZone__side__nav" id="workZone_nav">
+                                        <div class="b-workZone__content m-workZone__content__nav" id="workZone_nav_content">
+                                        <a href="#" class="b-workZone__side__nav__dismiss" id="dismissSideNavButton">&times;</a>
+                                        <div class="b-splitter" id="splitter">
+                                            <div class="b-splitter__innerPre">
+                                                <div class="b-splitter__inner">
+                                                    <div class="b-splitter__part m-splitter__part__mainImg"></div>
+                                                    <div class="b-splitter__part m-splitter__part__topImg"></div>
+                                                    <div class="b-splitter__part m-splitter__part__bottomImg"></div>
+                                                    <div class="b-splitter__part m-splitter__part__middleImg"></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+<div class="b-tabs">
+
+
+
+                        <div class="b-tabs__selectorItems">
+
+                            <div class="b-tabs__selectorItem m-tabs__selectorItem__selected m-tabs__selectorItem__first" id="tabSelector_menu">
+                                <span class="b-tabs__selectorItemIcon b-interfaceIcon m-interfaceIcon__menu"></span>
+                                <span class="b-tabs__selectorContent">Menu tab</span>
+                            </div>
+    
+                            <div class="b-tabs__selectorItem m-tabs__selectorItem__unselected" id="tabSelector_index">
+                                <span class="b-tabs__selectorItemIcon b-interfaceIcon m-interfaceIcon__index"></span>
+                                <span class="b-tabs__selectorContent">Index tab</span>
+                             </div>
+    
+                            <div class="b-tabs__selectorItem m-tabs__selectorItem__unselected" id="tabSelector_search">
+                                <span class="b-tabs__selectorItemIcon b-interfaceIcon m-interfaceIcon__search"></span>
+                                <span class="b-tabs__selectorContent">Search tab</span>
+                            </div>
+
+                        </div><!-- /b-tabs__selectorItems -->
+
+                        <div class="b-tabs__wrapperItems" id="tabWrapperItems">
+                        
+                            <div class="b-tabs__wrapperItem m-tabs__wrapperItem__selected" id="tabWrapper_menu">
+                                <div class="b-tabs__wrapperItemInner">
+                                    <div class="b-tree">
+                                    </div>                              
+                                </div>
+                                
+                            </div><!-- /menu -->
+
+                            <div class="b-tabs__wrapperItem" id="tabWrapper_index">
+                                <div class="b-tabs__wrapperItemInner">
+                                    <div class="b-tree"></div></div>
+                            </div>
+
+
+                            <div class="b-tabs__wrapperItem" id="tabWrapper_search">
+
+        
+
+<div class="b-search m-search__tabs" id="tabs_searchFormWrapper">
+    <form action="#" class="b-search__form">
+        <table class="b-search__layout">
+            <tr>
+                <td class="b-search__side m-search__side__input">
+                    <div class="b-search__gap">
+                        <label id="tabs_searchInput_label" for="tabs_searchInput" class="b-search__labelPlaceholder">Search tab</label>
+                        <input id="tabs_searchInput" type="text" value="" class="b-search__inputText" />
+                    </div>
+                </td>
+                <td class="b-search__side m-search__side__submit">
+                    <span class="b-button b-search__button">
+                        <span class="b-button__wrapper">
+                            <span class="b-button__text"></span>
+                        </span>
+                        <input type="submit" class="b-button__submit" value="Search" id="tabs_searchSubmit" />
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div><!-- /search -->
+<img src="i/blocks/search/loading.gif" class="b-tree__searching" id="searchProgress" alt="" />
+<div class="b-tabs__wrapperItemInner">
+
+<!-- .b-tree -->
+<div class="b-tree">
+    <!-- .b-tree__items -->
+    &#xA0;<br />&#xA0;
+    &#xA0;<br />&#xA0;
+    &#xA0;<br />&#xA0;
+    &#xA0;<br />&#xA0;
+    <!-- /.b-tree__items -->
+</div>
+<!-- /.b-tree -->
+
+
+
+                                </div>
+                            </div><!-- /wrapperItem -->
+                        </div><!-- /wrapperItems -->
+                    </div><!-- /b-tabs -->
+
+
+
+
+
+                                        </div><!-- /b-workZone__content -->
+                                    </td><!-- /workZone__nav -->
+
+
+
+                                    <td class="b-workZone__side m-workZone__side__article" id="workZone_article">
+                                        <div class="b-workZone__content" id="workZone_article__content">
+                                            <a href="#" class="b-article__presentSideNavButton" id="presentSideNavButton"><span></span></a>
+                                            <div class="b-workZone__overlay" id="workZone_article__overlay"></div>
+<div class="b-search m-search__workZone" id="searchZone">
+    <form action="#" class="b-search__form">
+        <table class="b-search__layout">
+            <tr>
+                <td class="b-search__side m-search__side__input">
+                    <div class="b-search__gap">
+                        <span class="b-interfaceIcon m-interfaceIcon__search m-interfaceIcon__search__input b-search__inputTextIcon"></span>
+                        <label id="workZone_searchInput_label" for="workZone_searchInput" class="b-search__labelPlaceholder">Search tab</label>
+                        <input id="workZone_searchInput" type="text" value="" class="b-search__inputText" />
+                    </div>
+                </td>
+                <td class="b-search__side m-search__side__submit">
+                    <span class="b-button b-search__button">
+                        <span class="b-button__wrapper">
+                            <span class="b-button__text"></span>
+                        </span>
+                        <input type="submit" class="b-button__submit" value="Search" id="workZone_searchSubmit" />
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div><!-- /search -->
+
+
+<div class="b-article" id="article">
+    <div class="b-article__preWrapper">
+        <table class="b-article__headerLayout" id="article__header">
+            <tr>
+                <td id="headerSide__nav" class="b-article__headerSide m-article__headerSide__nav">
+                    <div id="headerSide__nav__breadCrumbs" class="b-breadCrumbs">
+                        <ul class="b-breadCrumbs__items"><li class="b-breadCrumbs__item"><a href="3__application_usage.htm" class="b-breadCrumbs__link">3. Application usage</a></li>
+
+<li class="b-breadCrumbs__item"><a href="3_9__working_with_word_sources.htm" class="b-breadCrumbs__link">3.9. Working with word sources</a></li>
+
+<li class="b-breadCrumbs__item">3.9.1. Word source types</li>
+</ul>                    </div>
+                </td>
+                <td id="headerSide__buttons" class="b-article__headerSide m-article__headerSide__buttons">
+                    <div class="b-controlButtons">
+                        <ul class="b-controlButtons__items">
+                            <li class="b-controlButtons__item m-controlButtons__item__prev"><a href="3_9__working_with_word_sources.htm" class="b-controlButtons__link" title="Previous page"><span class="b-controlButtons__link_icon"></span><span class="b-controlButtons__link_text">&#xa0;Previous page</span></a></li>
+                            <li class="b-controlButtons__item m-controlButtons__item__next"><a href="3_9_2__adding_and_editing_word_sources.htm" class="b-controlButtons__link" title="Next page"><span class="b-controlButtons__link_text">Next page&#xa0;</span><span class="b-controlButtons__link_icon"></span></a></li>
+                                                </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="b-article__wrapper">
+            <div class="b-article__innerWrapper" id="description_on_page_placeholder">
+            <a id="top" class="anchor"></a>
+            </div><!-- /innerWrapper -->
+        </div>
+        <script type="text/javascript">
+        //<![CDATA[
+            if (1 == 0 || is_touch_device())
+            {
+                $(".b-article__wrapper").append(
+                    $("<table></table>")
+                    .addClass("b-article__footerLayout")
+                    .prop("id", "article__footer")
+                    .append(
+                        $("<tr></tr>").append(
+                            $("<td></td>")
+                            .addClass("b-article__headerSide m-article__headerSide__nav")
+                        )
+                        .append(
+                            $("<td></td>")
+                            .addClass("b-article__headerSide m-article__headerSide__buttons")
+                            .append(
+                                $("<div></div>").addClass("b-controlButtons")
+                                .html($("<ul></ul>").addClass("b-controlButtons__items").html("    <li class=\"b-controlButtons__item m-controlButtons__item__prev\"><a href=\"3_9__working_with_word_sources.htm\" class=\"b-controlButtons__link\" title=\"Previous page\"><span class=\"b-controlButtons__link_icon\"></span><span class=\"b-controlButtons__link_text\">&#xa0;Previous page</span></a></li>\n    <li class=\"b-controlButtons__item m-controlButtons__item__next\"><a href=\"3_9_2__adding_and_editing_word_sources.htm\" class=\"b-controlButtons__link\" title=\"Next page\"><span class=\"b-controlButtons__link_text\">Next page&#xa0;</span><span class=\"b-controlButtons__link_icon\"></span></a></li>\n"))
+                            )
+                        )
+                    )
+                );
+            }
+        //]]>
+        </script>
+    </div>
+</div>
+
+
+
+                                        </div>
+                                    </td><!-- /workZone__article -->
+                                </tr>
+                            </table>
+                        </div><!-- /workZone -->
+
+                    </td><!-- /pageContentMiddle -->
+                    <td class="b-pageContent__side m-pageContent__side__right" id="pageContentRight"></td>
+                        </tr>
+                    </table> <!-- /internal_wrapper -->
+                    </td>
+                </tr>
+                <tr class="b-pageContent__row m-pageContent__row__footer" id="pageContentFooter">
+                    <td class="b-pageContent__side m-pageContent__side__footer">
+                        <script type="text/javascript">
+                        //<![CDATA[
+                            if (1 == 1 && !is_touch_device())
+                                $( "#pageContentFooter" ).addClass("hidden");
+                        //]]>
+                        </script>
+                        <div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><table class="de_tbl_576 detbl" style="width: 100%; margin-left: 0; margin-right: auto;">
+<col style="width: 100%;" class="de_col_1_576" />
+<tr style="height: 29px;">
+<td class="de_td_576" style = "padding: 2px; padding-bottom: 1px; border-left-style: none; border-left-width: 0px; border-left-color: #000000; border-right-style: none; border-right-width: 0px; border-right-color: #000000; border-top-style: none; border-top-width: 0px; border-top-color: #000000; border-bottom-style: none; border-bottom-width: 0px; border-bottom-color: #000000;  width: 100%; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span style="font-family: &quot;Arial&quot;;font-size: 10pt;color:#f0f0f0;">  (c) Iskander Shafikov, 2020</span></div>
+</td></tr></table></div>
+                    </td>
+                </tr>
+            </table>
+        </div><!-- /pageContent -->
+
+</div><!-- /pageLayout -->
+<div id="hiddenContent" class="hiddenContent">
+    <noscript>
+    <div>To properly display this page you need a browser with JavaScript support.</div>
+    </noscript>
+                <div class="description_on_page"><div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="ic"><h1><strong>3.9.1. Word source types</strong></h1></div></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">The application can use three sources of words to generate crosswords:</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><strong>1. SQLite databases</strong></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><strong>2. Text files</strong></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><strong>3. Simple in-memory lists</strong></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">As you will see in the following sections, these source types can be used in combination, with as many sources in each category as you like.</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><a class="anchor" id="3.9.1.1"></a><h2><strong>Database Sources</strong></h2></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">The most efficient and recommended source type is SQLite databases. This type has a number of advantages:</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<ul class="de_list"><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; counter-reset: list-counter-13;">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>searching is fast and flexible, replying on the SQLite database engine specifically designed for such purposes</div>
+</li><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; ">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>the database engine can deal with very large datasets with millions of entries, without any memory or performance overhead</div>
+</li><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; ">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>an SQLite database is contained in a single <span class="code">*.db</span> file</div>
+</li><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; ">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>no additional software / drivers need to be installed; the SQLite driver comes inbuilt with Python</div>
+</li><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; ">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>databases can be edited to add / change / remove individual words using the inbuilt Word Source Manager or an external tool (such as the free <a href="https://sqlitebrowser.org/"><span class="de_2B94C39861">DB Browser for SQLite</span></a>)</div>
+</li><li class="list-element list-counter-13" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; direction: ltr; ">
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><div class="list-marker" style="color:#000000;font-size:11pt;font-family:&quot;Arial&quot;; display: inline-block; direction: ltr;"></div>you can also operate the databases directly using SQL queries (in fact, that's what <strong>pycrossword</strong> does under the hood)</div>
+</li></ul><div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">The internal structure of database sources is shown in the figure below.</div>
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><img  alt="" style="border: solid 0px;  " width="658" height="263" class=" de_780D01ADE8" src="drex_3_9_1__word_source_types_custom.png"/></div>
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><a class="anchor" id="Fig._3.9.1.1"></a><span class="caption"><strong>Fig. 3.9.1.1. Internal structure of an SQLite database word source</strong></span></div>
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">As you can see, every database contains two tables:</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">1. Parts of speech (<span class="de_823826CA2C">tpos</span>)</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">2. Words (<span class="de_823826CA2C">twords</span>)</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">The parts-of-speech table is simply a reference of all parts of speech that a word may belong to. A typical <span class="de_823826CA2C">tpos</span> table doesn't depend on the language and contains the common parts of speech (their abbreviated and full names):</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><table class="de_tbl_314 detbl" style="width: 314px; height: 304; margin-left: auto; margin-right: auto;">
+<col style="width: 66px;" class="de_col_1_66" />
+<col style="width: 69px;" class="de_col_2_69" />
+<col style="width: 179px;" class="de_col_3_179" />
+<tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>id</strong></span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>pos</strong></span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>posdesc</strong></span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">1</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">N</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">noun</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">2</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">V</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">verb</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">3</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">ADV</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">adverb</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">4</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">ADJ</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">adjective</span></div>
+</td></tr><tr style="height: 21px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">5</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">P</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">participle</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">6</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">PRON</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">pronoun</span></div>
+</td></tr><tr style="height: 22px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">7</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">I</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">interjection</span></div>
+</td></tr><tr style="height: 23px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">8</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">C</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">conjuction</span></div>
+</td></tr><tr style="height: 38px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">9</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">PREP</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">preposition</span></div>
+</td></tr><tr style="height: 38px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">10</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">PROP</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">proposition</span></div>
+</td></tr><tr style="height: 29px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">11</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">MISC</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">miscellaneous / other</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">12</span></div>
+</td><td class="de_td_69" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 69px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">NONE</span></div>
+</td><td class="de_td_179" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 179px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">no POS</span></div>
+</td></tr></table></div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">The words table (<span class="de_823826CA2C">twords</span>) is the main dataset used to search for words. It contains words and their part-of-speech reference (link to the <span class="de_823826CA2C">tpos</span> table). An example extract from this table is shown below:</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><table class="de_tbl_315 detbl" style="width: 315px; height: 128; margin-left: auto; margin-right: auto;">
+<col style="width: 66px;" class="de_col_1_66" />
+<col style="width: 187px;" class="de_col_2_187" />
+<col style="width: 62px;" class="de_col_3_62" />
+<tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>id</strong></span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>word</strong></span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top; background-color: #00ff84;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: center; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38"><strong>idpos</strong></span></div>
+</td></tr><tr style="height: 16px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84043</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capsizal</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">1</span></div>
+</td></tr><tr style="height: 17px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84044</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capsize</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">2</span></div>
+</td></tr><tr style="height: 21px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84045</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capsized</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">4</span></div>
+</td></tr><tr style="height: 21px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84046</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capsomer</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">1</span></div>
+</td></tr><tr style="height: 15px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84047</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capsomere</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">1</span></div>
+</td></tr><tr style="height: 19px;">
+<td class="de_td_66" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 66px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">84048</span></div>
+</td><td class="de_td_187" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 187px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">capstan</span></div>
+</td><td class="de_td_62" style = "padding: 2px; padding-bottom: 1px; border-left-style: solid; border-left-width: 1px; border-left-color: #000000; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-top-style: solid; border-top-width: 1px; border-top-color: #000000; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000;  width: 62px; vertical-align: top;" colspan = "1" rowspan = "1" >
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_4CD179DA38">1</span></div>
+</td></tr></table></div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;"><span class="de_496AA02164">The rightmost field in this table (</span><span class="de_31A4EF827C">idpos</span><span class="de_496AA02164">) is internally linked to the unique </span><span class="de_31A4EF827C">id</span><span class="de_496AA02164"> field of the part-of-speech table (</span><span class="de_31A4EF827C">tpos</span><span class="de_496AA02164">). You will see that this extract contains 4 nouns, one verb and one adjective.</span></div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">Read further in <a class="local_link" href="3_9_2_1__database_sources.htm"><span class="de_2B94C39861">Database Sources</span></a> to learn how you can easily populate SQLite databases from publicly available word lists, such as spell checker dictionaries.</div>
+<div class="p" style="text-align: justify; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><a class="anchor" id="3.9.1.2"></a><h2><strong>Text Files</strong></h2></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">Simple text files can also be used as word sources. Such a text file contains a list of words with or without part-of-speech data, where each word occupies one line. Below is an example extract from a text file containing Spanish words:</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrar</span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrederas</span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrenar</span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrocado<span class="de_CED2805213">/GS</span></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrotadamente</span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrotamiento<span class="de_CED2805213">/S</span></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarrotar<span class="de_CED2805213">/RED</span></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abarse</span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abasí<span class="de_CED2805213">/S</span></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 528px; text-indent: 0px;"><span class="code">abastardar<span class="de_CED2805213">/RED</span></span></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">You can see above that some words here contain part-of-speech data (marked with <span class="de_CED2805213">red font</span>), while others don't. You will see further that this is no problem for <strong>pycrossword</strong>; this application will store such non-marked words with a special <span class="code">NONE</span> part-of-speech attribute.</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;"><a class="anchor" id="3.9.1.3"></a><h2><strong>Simple Lists</strong></h2></div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">Lists of words (with or without part-of-speech data) can be fed into <strong>pycrossword</strong> directly, without importing from a file. With simple lists, you can also indicate that they do or do not have part-of-speech data flatly for all words, to economize on memory.</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">&#160;</div>
+<div class="p" style="text-align: left; direction: ltr; margin-left: 0px; text-indent: 0px;">Simple lists are best when you don't want to handle large word sets (a word list should contain less than 10,000 entries not to bloat memory).</div>
+</div>                                    	<div class="b-socialplugin__layout">
+		<table class="b-socialplugin__buttons">
+			<tr class="b-socialplugin__buttons_tr">
+				<td class= "b-socialplugin__button">
+					<div class="fb-like"  data-send="false" data-layout="button_count" data-width="120" data-show-faces="true"></div>
+				</td>
+				<td class= "b-socialplugin__button b-socialplugin__button_twitter">
+					<a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-url="https://github.com/S0mbre/crossword/wiki/3_9_1__word_source_types.htm">Tweet</a>
+				</td>
+				
+				<td class= "b-socialplugin__button">
+					<a href="http://www.reddit.com/submit" onclick="window.open('http://www.reddit.com/submit?url=' + encodeURIComponent(window.location)); return false" target="_blank"> <img src="https://www.reddit.com/static/spreddit1.gif" alt="submit to reddit" border="0" /> </a>
+				</td>
+				<td class= "b-socialplugin__button">
+					<script type="IN/Share"  data-counter="right" data-url="https://github.com/S0mbre/crossword/wiki/3_9_1__word_source_types.htm"></script>
+				</td>
+				<td class= "b-socialplugin__button">
+					<!-- Place this tag where you want the su badge to render -->
+					<su:badge layout="2" location="https://github.com/S0mbre/crossword/wiki/3_9_1__word_source_types.htm"></su:badge>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- /SocialPlugin -->
+                                <h6 class="b-article__generatorCopyright">
+                    <a class="b-link b-article__generatorCopyrightLink" href="http://www.drexplain.com" rel="nofollow">Made with help of Dr.Explain</a>
+                </h6>
+                </div>
+</body>
+</html>

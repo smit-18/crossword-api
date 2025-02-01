@@ -1,0 +1,2 @@
+[console_scripts]
+crossword = crossword_generator.__main__:main
