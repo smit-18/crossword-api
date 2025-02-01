@@ -2,6 +2,7 @@ import io
 import base64
 import logging
 import os
+import uuid
 
 from flask import Flask, request, jsonify
 from PIL import Image, ImageDraw, ImageFont
@@ -318,6 +319,21 @@ def generate_crossword_images_api(word_clues, cell_size=40):
     img_unsolved = create_crossword_image(cw, cell_size=cell_size, show_solution=False)
     return img_unsolved, img_solution
 
+def save_image_from_base64(b64_string, filename):
+    """
+    Decode the base64 image and write it as a PNG file to the static directory.
+    Returns the path to the saved file.
+    """
+    image_data = base64.b64decode(b64_string)
+    # Ensure the static directory exists.
+    static_dir = "static"
+    if not os.path.exists(static_dir):
+        os.makedirs(static_dir)
+    file_path = os.path.join(static_dir, filename)
+    with open(file_path, "wb") as f:
+        f.write(image_data)
+    return file_path
+
 ###############################################################################
 # Application Factory
 ###############################################################################
@@ -341,10 +357,21 @@ def create_app():
             data = request.get_json()
             if not data:
                 raise ValueError("No JSON payload provided.")
-            unsolved_img, solved_img = generate_crossword_images_api(data, cell_size=40)
+            unsolved_b64, solved_b64 = generate_crossword_images_api(data, cell_size=40)
+            # Generate unique filenames.
+            unsolved_filename = f"unsolved_{uuid.uuid4().hex}.png"
+            solved_filename = f"solved_{uuid.uuid4().hex}.png"
+
+            # Save images into the static folder.
+            save_image_from_base64(unsolved_b64, unsolved_filename)
+            save_image_from_base64(solved_b64, solved_filename)
+
+            # Build the URLs to point to the saved images.
+            unsolved_url = request.host_url + "static/" + unsolved_filename
+            solved_url = request.host_url + "static/" + solved_filename
             return jsonify({
-                "unsolved": unsolved_img,
-                "solved": solved_img
+                "unsolved": unsolved_url,
+                "solved": solved_url
             })
         except Exception as e:
             app.logger.exception("Error generating crossword:")
