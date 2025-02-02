@@ -83,23 +83,68 @@ class Crossword:
 
         return False
 
-def is_valid_placement(cw, word, row, col, orientation):
-    """Check whether placing 'word' at (row, col) in the given orientation is valid."""
+def is_valid_placement(cw, word, start_row, start_col, orientation):
+    """
+    Checks if placing `word` at (start_row, start_col) in the given orientation 
+    will only form allowed letter sequences. The check enforces that:
+    
+      - The word fits within the grid.
+      - The cell immediately before the word (and after) is empty.
+      - For any cell where a letter is to be placed (and isn't already there as an intersection),
+        the adjacent perpendicular cells are blank.
+    
+    This helps prevent forming any extra contiguous words aside from those in the input.
+    """
     word = word.upper()
     if orientation == "across":
-        if col < 0 or col + len(word) > cw.cols or row < 0 or row >= cw.rows:
+        # Check horizontal bounds.
+        if start_col < 0 or start_col + len(word) > cw.cols or start_row < 0 or start_row >= cw.rows:
             return False
-        for i, ch in enumerate(word):
-            if cw.grid[row][col + i] not in [' ', ch]:
+        # Check that the cell immediately to the left of the word is empty (if in-bound)
+        if start_col - 1 >= 0 and cw.grid[start_row][start_col - 1] != " ":
+            return False
+        # Check that the cell immediately after the word is empty (if in-bound)
+        if start_col + len(word) < cw.cols and cw.grid[start_row][start_col + len(word)] != " ":
+            return False
+
+        for i in range(len(word)):
+            current_col = start_col + i
+            cell = cw.grid[start_row][current_col]
+            # The target must be blank or already matching.
+            if cell != " " and cell != word[i]:
                 return False
+
+            # If placing a new letter here (cell blank), ensure that cells above and below are blank.
+            if cell == " ":
+                if start_row - 1 >= 0 and cw.grid[start_row - 1][current_col] != " ":
+                    return False
+                if start_row + 1 < cw.rows and cw.grid[start_row + 1][current_col] != " ":
+                    return False
         return True
 
     elif orientation == "down":
-        if row < 0 or row + len(word) > cw.rows or col < 0 or col >= cw.cols:
+        # Check vertical bounds.
+        if start_row < 0 or start_row + len(word) > cw.rows or start_col < 0 or start_col >= cw.cols:
             return False
-        for i, ch in enumerate(word):
-            if cw.grid[row + i][col] not in [' ', ch]:
+        # Check that the cell immediately above the word is empty (if in-bound)
+        if start_row - 1 >= 0 and cw.grid[start_row - 1][start_col] != " ":
+            return False
+        # Check that the cell immediately below the word is empty (if in-bound)
+        if start_row + len(word) < cw.rows and cw.grid[start_row + len(word)][start_col] != " ":
+            return False
+
+        for i in range(len(word)):
+            current_row = start_row + i
+            cell = cw.grid[current_row][start_col]
+            if cell != " " and cell != word[i]:
                 return False
+
+            # If placing a new letter here, ensure that the left and right cells are blank.
+            if cell == " ":
+                if start_col - 1 >= 0 and cw.grid[current_row][start_col - 1] != " ":
+                    return False
+                if start_col + 1 < cw.cols and cw.grid[current_row][start_col + 1] != " ":
+                    return False
         return True
 
     return False
@@ -132,6 +177,7 @@ def build_crossword(word_entries):
     """
     Build the crossword puzzle.
     Uses interlocking placements based on common letters between words.
+    Ensures that only provided words are formed and all words are connected.
     """
     grid_dim = compute_grid_dimension(word_entries)
     cw = Crossword(grid_dim, grid_dim)
@@ -152,15 +198,16 @@ def build_crossword(word_entries):
 
     # For each remaining word, try to interlock with the placed words.
     for entry in word_entries[1:]:
-        new_word = entry["word"]
+        new_word = entry["word"].upper()
         new_clue = entry["clue"]
         best_candidate = None
         best_score = -1
 
+        # Try to find the best intersecting candidate.
         for placed_entry in cw.placed_words:
             existing_word = placed_entry["word"]
             for i, ch_existing in enumerate(existing_word):
-                for j, ch_new in enumerate(new_word.upper()):
+                for j, ch_new in enumerate(new_word):
                     if ch_existing == ch_new:
                         if placed_entry["orientation"] == "across":
                             candidate_row = placed_entry["row"] - j
@@ -170,6 +217,7 @@ def build_crossword(word_entries):
                             candidate_row = placed_entry["row"] + i
                             candidate_col = placed_entry["col"] - j
                             candidate_orientation = "across"
+                        
                         if is_valid_placement(cw, new_word, candidate_row, candidate_col, candidate_orientation):
                             score = candidate_score(cw, new_word, candidate_row, candidate_col, candidate_orientation)
                             if score > best_score:
@@ -179,19 +227,38 @@ def build_crossword(word_entries):
         placed = False
         if best_candidate is not None and best_score > 0:
             row_candidate, col_candidate, orientation_candidate = best_candidate
+            # Save grid state and current placement count in case this placement needs to be reverted.
+            original_grid = [row[:] for row in cw.grid]
+            pre_word_count = len(cw.placed_words)
             placed = cw.place_word(new_word, new_clue, row_candidate, col_candidate, orientation_candidate)
+            if placed:
+                # Validate that no extra words were formed.
+                allowed_words = [entry["word"] for entry in word_entries]
+                valid, formed_words = check_extra_words(cw, allowed_words)
+                if not valid:
+                    cw.grid = original_grid  # Revert grid state.
+                    cw.placed_words = cw.placed_words[:pre_word_count]  # Remove invalid placement.
+                    placed = False
 
-        # If no intersecting candidate, try arbitrary placement (first available horizontal slot).
+        # If placement wasn't successful via intersection, try to place it adjacent to existing words.
         if not placed:
             for r in range(cw.rows):
                 for c in range(cw.cols - len(new_word) + 1):
+                    temp_grid = [row[:] for row in cw.grid]
+                    pre_word_count = len(cw.placed_words)
                     if cw.place_word(new_word, new_clue, r, c, "across"):
-                        placed = True
-                        break
+                        # Ensure the new word is connected to the grid.
+                        if is_connected(cw, r, c, len(new_word), "across"):
+                            valid, formed_words = check_extra_words(cw, [entry["word"] for entry in word_entries])
+                            if valid:
+                                placed = True
+                                break
+                        cw.grid = temp_grid  # revert grid state.
+                        cw.placed_words = cw.placed_words[:pre_word_count]  # Remove invalid placement.
                 if placed:
                     break
 
-    # Assign numbers to starting cells
+    # Assign numbers to starting cells.
     num = 1
     for r in range(cw.rows):
         for c in range(cw.cols):
@@ -206,6 +273,21 @@ def build_crossword(word_entries):
         pos = (entry["row"], entry["col"])
         entry["number"] = cw.numbers.get(pos, None)
     return cw
+
+def is_connected(cw, row, col, length, orientation):
+    """
+    Check if the newly placed word is connected to the existing grid.
+    A word is considered connected if any of its surrounding cells (perpendicular to its orientation) has a letter.
+    """
+    if orientation == "across":
+        for i in range(length):
+            if (row > 0 and cw.grid[row - 1][col + i] != ' ') or (row < cw.rows - 1 and cw.grid[row + 1][col + i] != ' '):
+                return True
+    elif orientation == "down":
+        for i in range(length):
+            if (col > 0 and cw.grid[row + i][col - 1] != ' ') or (col < cw.cols - 1 and cw.grid[row + i][col + 1] != ' '):
+                return True
+    return False
 
 ###############################################################################
 # Image Drawing Functions
@@ -387,3 +469,44 @@ app = create_app()
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+
+def check_extra_words(cw, allowed_words):
+    """
+    Scans each row and column for contiguous letter sequences.
+    Returns (True, found_words) if every found word is in the allowed_words set.
+    Otherwise returns (False, found_words) if an extra word is formed.
+    """
+    allowed_set = set(word.upper() for word in allowed_words)
+    found_words = set()
+
+    # Scan rows
+    for r in range(cw.rows):
+        word = ""
+        for c in range(cw.cols):
+            if cw.grid[r][c] != " ":
+                word += cw.grid[r][c]
+            else:
+                if len(word) > 1:
+                    found_words.add(word)
+                word = ""
+        if len(word) > 1:
+            found_words.add(word)
+
+    # Scan columns
+    for c in range(cw.cols):
+        word = ""
+        for r in range(cw.rows):
+            if cw.grid[r][c] != " ":
+                word += cw.grid[r][c]
+            else:
+                if len(word) > 1:
+                    found_words.add(word)
+                word = ""
+        if len(word) > 1:
+            found_words.add(word)
+    
+    # Verify all found words are allowed.
+    for word in found_words:
+        if word not in allowed_set:
+            return False, found_words
+    return True, found_words
