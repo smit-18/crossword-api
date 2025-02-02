@@ -3,9 +3,14 @@ import base64
 import logging
 import os
 import uuid
+import boto3
+from botocore.exceptions import ClientError
+from dotenv import load_dotenv
 
 from flask import Flask, request, jsonify
 from PIL import Image, ImageDraw, ImageFont
+
+load_dotenv()  # This will load variables from .env into os.environ
 
 ###############################################################################
 # Font caching for performance.
@@ -401,20 +406,32 @@ def generate_crossword_images_api(word_clues, cell_size=40):
     img_unsolved = create_crossword_image(cw, cell_size=cell_size, show_solution=False)
     return img_unsolved, img_solution
 
-def save_image_from_base64(b64_string, filename):
+def upload_image_to_s3(b64_string, filename, bucket):
     """
-    Decode the base64 image and write it as a PNG file to the static directory.
-    Returns the path to the saved file.
+    Create an S3 client using the provided AWS credentials,
+    and upload the decoded image data. Since ACLs are not supported
+    by the bucket, we do not include an ACL parameter.
+    Returns the public URL to the uploaded image.
     """
     image_data = base64.b64decode(b64_string)
-    # Ensure the static directory exists.
-    static_dir = "static"
-    if not os.path.exists(static_dir):
-        os.makedirs(static_dir)
-    file_path = os.path.join(static_dir, filename)
-    with open(file_path, "wb") as f:
-        f.write(image_data)
-    return file_path
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+        region_name=os.environ.get("AWS_REGION", "us-east-1")
+    )
+    try:
+        s3.put_object(
+            Bucket=bucket,
+            Key=filename,
+            Body=image_data,
+            ContentType="image/png"
+        )
+    except ClientError as e:
+        raise Exception(f"Error uploading image to S3: {e}")
+
+    url = f"https://{bucket}.s3.amazonaws.com/{filename}"
+    return url
 
 ###############################################################################
 # Application Factory
@@ -444,13 +461,15 @@ def create_app():
             unsolved_filename = f"unsolved_{uuid.uuid4().hex}.png"
             solved_filename = f"solved_{uuid.uuid4().hex}.png"
 
-            # Save images into the static folder.
-            save_image_from_base64(unsolved_b64, unsolved_filename)
-            save_image_from_base64(solved_b64, solved_filename)
+            # Retrieve the S3 bucket name from an environment variable.
+            bucket = os.environ.get("S3_BUCKET_NAME")
+            if not bucket:
+                raise Exception("S3_BUCKET_NAME environment variable not set.")
+            
+            # Upload images to S3.
+            unsolved_url = upload_image_to_s3(unsolved_b64, unsolved_filename, bucket)
+            solved_url = upload_image_to_s3(solved_b64, solved_filename, bucket)
 
-            # Build the URLs to point to the saved images.
-            unsolved_url = request.host_url + "static/" + unsolved_filename
-            solved_url = request.host_url + "static/" + solved_filename
             return jsonify({
                 "unsolved": unsolved_url,
                 "solved": solved_url
@@ -510,3 +529,5 @@ def check_extra_words(cw, allowed_words):
         if word not in allowed_set:
             return False, found_words
     return True, found_words
+
+
