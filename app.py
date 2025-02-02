@@ -10,7 +10,9 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from PIL import Image, ImageDraw, ImageFont
 
-load_dotenv()  # This will load variables from .env into os.environ
+# Load environment variables from .env if it exists (for local development)
+if os.path.exists('.env'):
+    load_dotenv()
 
 ###############################################################################
 # Font caching for performance.
