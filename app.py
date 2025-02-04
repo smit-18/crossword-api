@@ -17,19 +17,31 @@ if os.path.exists('.env'):
 ###############################################################################
 # Font caching for performance.
 ###############################################################################
-def load_fonts(cell_size):
+def load_fonts(cell_size, upscale_factor=2):
     """
-    Attempt to load truetype fonts; if that fails, use the default.
-    Returns a tuple: (num_font, letter_font, clue_font)
+    Loads TrueType fonts for high-resolution rendering.
+    
+    Multipliers:
+      - num_font: 35% of the effective cell_size.
+      - letter_font: 65% of the effective cell_size.
+      - clue_font: 14 * upscale_factor.
+      
+    Tries to load a local arial.ttf first; if not available, falls back on DejaVuSans.ttf.
+    If both attempts fail, returns the default font.
     """
+    effective_cell_size = cell_size * upscale_factor
+    local_font_path = os.path.join(os.path.dirname(__file__), "arial.ttf")
+
     try:
-        num_font = ImageFont.truetype("arial.ttf", int(cell_size * 0.3))
-        letter_font = ImageFont.truetype("arial.ttf", int(cell_size * 0.6))
-        clue_font = ImageFont.truetype("arial.ttf", 16)
-    except IOError:
+        font_source = local_font_path if os.path.exists(local_font_path) else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        num_font = ImageFont.truetype(font_source, int(effective_cell_size * 0.25))
+        letter_font = ImageFont.truetype(font_source, int(effective_cell_size * 0.5))
+        clue_font = ImageFont.truetype(font_source, int(12 * upscale_factor))
+    except Exception:
         num_font = ImageFont.load_default()
         letter_font = ImageFont.load_default()
         clue_font = ImageFont.load_default()
+
     return num_font, letter_font, clue_font
 
 ###############################################################################
@@ -300,85 +312,135 @@ def is_connected(cw, row, col, length, orientation):
 # Image Drawing Functions
 ###############################################################################
 
-def create_crossword_image(cw, cell_size=80, show_solution=True, padding=20):
+def create_crossword_image(cw, cell_size=80, show_solution=True, padding=20, upscale_factor=2):
     """
-    Creates a PNG image (base64‑encoded) of the crossword with padding around the grid:
-      - White background for the entire image.
-      - Only draws black borders around cells that are filled with letters.
-      - Starting cell numbers, letters, and clues are drawn in black.
-      - A padding (default: 20px) is added around the grid.
-      - Increased cell_size for a higher resolution (better quality) image.
+    Creates a high-resolution PNG image (base64‑encoded) of the crossword with padding around the grid,
+    sharp text, and clues that wrap onto new lines if they exceed the available width.
+    
+    Clues are drawn in two columns. In each column, the available width is set to:
+       (grid width // 2) - clue_margin.
+    
+    Parameters:
+      cw (Crossword): The crossword puzzle data structure.
+      cell_size (int): The base size of each cell (default: 80).
+      show_solution (bool): Whether to show the solution letters (default: True).
+      padding (int): Padding around the grid in pixels (default: 20).
+      upscale_factor (int): Scale multiplier for higher render resolution (default: 2).
+    
+    Returns:
+      A base64‑encoded PNG image of the rendered crossword.
     """
+    from PIL import Image, ImageDraw
+    import io, base64
+
+    # Calculate effective sizes.
+    effective_cell_size = cell_size * upscale_factor
+    effective_padding = padding * upscale_factor
+
     rows, cols = cw.rows, cw.cols
-    grid_width = cols * cell_size
-    grid_height = rows * cell_size
+    grid_width = cols * effective_cell_size
+    grid_height = rows * effective_cell_size
 
-    # Define the clues area height.
-    clues_area = 200
+    clues_area = 200 * upscale_factor
 
-    # Total image dimensions include padding on the left/right and top/bottom.
-    total_width = grid_width + (2 * padding)
-    total_height = grid_height + (2 * padding) + clues_area
+    total_width = grid_width + (2 * effective_padding)
+    total_height = grid_height + (2 * effective_padding) + clues_area
 
-    # Create image with an overall white background.
     img = Image.new("RGB", (total_width, total_height), "white")
     draw = ImageDraw.Draw(img)
 
-    # Calculate origin of grid drawing.
-    grid_origin_x = padding
-    grid_origin_y = padding
+    grid_origin_x = effective_padding
+    grid_origin_y = effective_padding
 
-    # Only draw borders for cells that contain a letter.
     for r in range(rows):
         for c in range(cols):
-            x0 = grid_origin_x + c * cell_size
-            y0 = grid_origin_y + r * cell_size
+            x0 = grid_origin_x + c * effective_cell_size
+            y0 = grid_origin_y + r * effective_cell_size
             if cw.grid[r][c] != ' ':
-                draw.rectangle([x0, y0, x0 + cell_size, y0 + cell_size], outline="black", width=2)
+                draw.rectangle([x0, y0, x0 + effective_cell_size, y0 + effective_cell_size],
+                               outline="black", width=2)
 
-    # Load fonts (cached for performance).
-    num_font, letter_font, clue_font = load_fonts(cell_size)
+    # Load fonts.
+    num_font, letter_font, clue_font = load_fonts(cell_size, upscale_factor=upscale_factor)
 
-    # Draw numbers and (optionally) letters in black.
     for r in range(rows):
         for c in range(cols):
-            x = grid_origin_x + c * cell_size
-            y = grid_origin_y + r * cell_size
+            x = grid_origin_x + c * effective_cell_size
+            y = grid_origin_y + r * effective_cell_size
             if (r, c) in cw.numbers:
                 num_text = str(cw.numbers[(r, c)])
-                draw.text((x + 2, y + 2), num_text, fill="black", font=num_font)
+                draw.text((x + 2 * upscale_factor, y + 2 * upscale_factor),
+                          num_text, fill="black", font=num_font)
             if show_solution and cw.grid[r][c] != ' ':
                 letter = cw.grid[r][c]
                 bbox = letter_font.getbbox(letter)
                 lw = bbox[2] - bbox[0]
                 lh = bbox[3] - bbox[1]
-                draw.text((x + (cell_size - lw) / 2, y + (cell_size - lh) / 2),
+                draw.text((x + (effective_cell_size - lw) / 2, y + (effective_cell_size - lh) / 2),
                           letter, fill="black", font=letter_font)
 
-    # Draw clues below the grid.
-    clue_margin = 5
+    def wrap_text(text, font, max_width):
+        """
+        Breaks text into multiple lines so that each line's width (as measured using font.getbbox)
+        is less than or equal to max_width.
+        """
+        words = text.split()
+        lines = []
+        current_line = ""
+        for word in words:
+            test_line = current_line + (" " if current_line else "") + word
+            bbox = font.getbbox(test_line)
+            width = bbox[2] - bbox[0]
+            if width <= max_width:
+                current_line = test_line
+            else:
+                if current_line:
+                    lines.append(current_line)
+                current_line = word
+        if current_line:
+            lines.append(current_line)
+        return lines
+
+    clue_margin = 5 * upscale_factor
     clue_y = grid_origin_y + grid_height + clue_margin
-    draw.text((padding + clue_margin, clue_y), "ACROSS:", fill="black", font=clue_font)
-    offset = 20
-    # Sort across clues by number.
+
+    max_clue_width = (grid_width // 2) - clue_margin
+
+    # Replace draw.textsize with font.getbbox (or getsize) for line height.
+    bbox = clue_font.getbbox("Ag")
+    line_height = (bbox[3] - bbox[1]) + (2 * upscale_factor)
+
+    left_text_x = effective_padding + clue_margin
+    draw.text((left_text_x, clue_y), "ACROSS:", fill="black", font=clue_font)
+    offset = line_height * 2
     across_clues = sorted(
-        [(word_info["number"], word_info["clue"]) for word_info in cw.placed_words if word_info.get("number") and word_info["orientation"] == "across"],
+        [(entry["number"], entry["clue"]) for entry in cw.placed_words
+         if entry.get("number") and entry["orientation"] == "across"],
         key=lambda x: x[0]
     )
     for num, clue in across_clues:
-        draw.text((padding + clue_margin, clue_y + offset), f"{num}. {clue}", fill="black", font=clue_font)
-        offset += 18
+        full_text = f"{num}. {clue}"
+        lines = wrap_text(full_text, clue_font, max_clue_width)
+        for line in lines:
+            draw.text((left_text_x, clue_y + offset), line, fill="black", font=clue_font)
+            offset += line_height
+        offset += line_height // 2
 
-    clue_x2 = total_width // 2 + 10
-    draw.text((clue_x2, clue_y), "DOWN:", fill="black", font=clue_font)
-    offset2 = 20
+    right_text_x = (total_width // 2) + (10 * upscale_factor)
+    draw.text((right_text_x, clue_y), "DOWN:", fill="black", font=clue_font)
+    offset2 = line_height * 2
     down_clues = sorted(
-        [(word_info["number"], word_info["clue"]) for word_info in cw.placed_words if word_info.get("number") and word_info["orientation"] == "down"],
+        [(entry["number"], entry["clue"]) for entry in cw.placed_words
+         if entry.get("number") and entry["orientation"] == "down"],
         key=lambda x: x[0]
     )
     for num, clue in down_clues:
-        draw.text((clue_x2, clue_y + offset2), f"{num}. {clue}", fill="black", font=clue_font)
-        offset2 += 18
+        full_text = f"{num}. {clue}"
+        lines = wrap_text(full_text, clue_font, max_clue_width)
+        for line in lines:
+            draw.text((right_text_x, clue_y + offset2), line, fill="black", font=clue_font)
+            offset2 += line_height
+        offset2 += line_height // 2
 
     buffered = io.BytesIO()
     img.save(buffered, format="PNG")
