@@ -300,62 +300,50 @@ def is_connected(cw, row, col, length, orientation):
 # Image Drawing Functions
 ###############################################################################
 
-def create_crossword_image(cw, cell_size=40, show_solution=True):
+def create_crossword_image(cw, cell_size=80, show_solution=True, padding=20):
     """
-    Creates a PNG image (base64‑encoded) of the crossword:
-      - White for active cells; black for unused cells.
-      - Starting cells show a number.
-      - Letters are drawn if show_solution is True.
-      - Clues are drawn below the grid.
+    Creates a PNG image (base64‑encoded) of the crossword with padding around the grid:
+      - White background for the entire image.
+      - Only draws black borders around cells that are filled with letters.
+      - Starting cell numbers, letters, and clues are drawn in black.
+      - A padding (default: 20px) is added around the grid.
+      - Increased cell_size for a higher resolution (better quality) image.
     """
     rows, cols = cw.rows, cw.cols
     grid_width = cols * cell_size
     grid_height = rows * cell_size
 
-    # Extract clues and sort by number.
-    across_clues = []
-    down_clues = []
-    for word_info in cw.placed_words:
-        if word_info.get("number") is None:
-            continue
-        if word_info["orientation"] == "across":
-            across_clues.append((word_info["number"], word_info["clue"]))
-        else:
-            down_clues.append((word_info["number"], word_info["clue"]))
-    across_clues.sort(key=lambda x: x[0])
-    down_clues.sort(key=lambda x: x[0])
-
+    # Define the clues area height.
     clues_area = 200
-    total_height = grid_height + clues_area
 
-    img = Image.new("RGB", (grid_width, total_height), "white")
+    # Total image dimensions include padding on the left/right and top/bottom.
+    total_width = grid_width + (2 * padding)
+    total_height = grid_height + (2 * padding) + clues_area
+
+    # Create image with an overall white background.
+    img = Image.new("RGB", (total_width, total_height), "white")
     draw = ImageDraw.Draw(img)
 
-    # Draw cells.
+    # Calculate origin of grid drawing.
+    grid_origin_x = padding
+    grid_origin_y = padding
+
+    # Only draw borders for cells that contain a letter.
     for r in range(rows):
         for c in range(cols):
-            x0, y0 = c * cell_size, r * cell_size
+            x0 = grid_origin_x + c * cell_size
+            y0 = grid_origin_y + r * cell_size
             if cw.grid[r][c] != ' ':
-                draw.rectangle([x0, y0, x0 + cell_size, y0 + cell_size], fill="white")
-            else:
-                draw.rectangle([x0, y0, x0 + cell_size, y0 + cell_size], fill="black")
-
-    # Draw grid lines.
-    for i in range(cols + 1):
-        x = i * cell_size
-        draw.line([(x, 0), (x, grid_height)], fill="black", width=2)
-    for j in range(rows + 1):
-        y = j * cell_size
-        draw.line([(0, y), (grid_width, y)], fill="black", width=2)
+                draw.rectangle([x0, y0, x0 + cell_size, y0 + cell_size], outline="black", width=2)
 
     # Load fonts (cached for performance).
     num_font, letter_font, clue_font = load_fonts(cell_size)
 
-    # Draw numbers and letters.
+    # Draw numbers and (optionally) letters in black.
     for r in range(rows):
         for c in range(cols):
-            x = c * cell_size
-            y = r * cell_size
+            x = grid_origin_x + c * cell_size
+            y = grid_origin_y + r * cell_size
             if (r, c) in cw.numbers:
                 num_text = str(cw.numbers[(r, c)])
                 draw.text((x + 2, y + 2), num_text, fill="black", font=num_font)
@@ -369,16 +357,25 @@ def create_crossword_image(cw, cell_size=40, show_solution=True):
 
     # Draw clues below the grid.
     clue_margin = 5
-    clue_y = grid_height + clue_margin
-    draw.text((clue_margin, clue_y), "ACROSS:", fill="black", font=clue_font)
+    clue_y = grid_origin_y + grid_height + clue_margin
+    draw.text((padding + clue_margin, clue_y), "ACROSS:", fill="black", font=clue_font)
     offset = 20
+    # Sort across clues by number.
+    across_clues = sorted(
+        [(word_info["number"], word_info["clue"]) for word_info in cw.placed_words if word_info.get("number") and word_info["orientation"] == "across"],
+        key=lambda x: x[0]
+    )
     for num, clue in across_clues:
-        draw.text((clue_margin, clue_y + offset), f"{num}. {clue}", fill="black", font=clue_font)
+        draw.text((padding + clue_margin, clue_y + offset), f"{num}. {clue}", fill="black", font=clue_font)
         offset += 18
 
-    clue_x2 = grid_width // 2 + 10
+    clue_x2 = total_width // 2 + 10
     draw.text((clue_x2, clue_y), "DOWN:", fill="black", font=clue_font)
     offset2 = 20
+    down_clues = sorted(
+        [(word_info["number"], word_info["clue"]) for word_info in cw.placed_words if word_info.get("number") and word_info["orientation"] == "down"],
+        key=lambda x: x[0]
+    )
     for num, clue in down_clues:
         draw.text((clue_x2, clue_y + offset2), f"{num}. {clue}", fill="black", font=clue_font)
         offset2 += 18
